@@ -1,0 +1,378 @@
+The Canvas class holds the "draw" calls. To draw something, you need 4 basic components: A Bitmap to hold the pixels, a Canvas to host the draw calls (writing into the bitmap), a drawing primitive (e.g. Rect, Path, text, Bitmap), and a paint (to describe the colors and styles for the drawing).
+
+
+enum Canvas.EdgeType
+      AA : Antialiased : Treat edges by rounding-out, since they may be antialiased
+      BW : Black-and-White: Treat edges by just rounding to nearest pixel boundary
+
+enum Canvas.VertexMode
+    TRIANGLES
+    TRIANGLE_FAN
+  TRIANGLE_STRIP
+
+
+int ALL_SAVE_FLAG
+    ':Restore everything when restore() is called (standard save flags).
+
+int CLIP_SAVE_FLAG
+    ':Restore the current clip when restore() is called.
+
+int CLIP_TO_LAYER_SAVE_FLAG
+    ':Clip drawing to the bounds of the offscreen layer, omit at your own peril.
+
+int FULL_COLOR_LAYER_SAVE_FLAG
+    ':The layer requires full 8-bit precision for each color channel.
+
+int HAS_ALPHA_LAYER_SAVE_FLAG
+    ':The layer requires a per-pixel alpha channel.
+
+int MATRIX_SAVE_FLAG
+    ':Restore the current matrix when restore() is called.
+
+
+Region.Op
+    DIFFERENCE
+    INTERSECT
+    REPLACE
+    REVERSE_DIFFERENCE
+    UNION
+    XOR
+
+
+':path
+
+boolean clipPath(Path path, Region.Op op)
+    Modify the current clip with the specified path.
+
+boolean clipPath(Path path)
+    Intersect the current clip with the specified path.
+
+':rect
+
+boolean clipRect(float left, float top, float right, float bottom, Region.Op op)
+    Modify the current clip with the specified rectangle, which is expressed in local coordinates.
+
+boolean clipRect(RectF rect)
+    Intersect the current clip with the specified rectangle, which is expressed in local coordinates.
+
+boolean clipRect(Rect rect, Region.Op op)
+    Modify the current clip with the specified rectangle, which is expressed in local coordinates.
+
+boolean clipRect(int left, int top, int right, int bottom)
+    Intersect the current clip with the specified rectangle, which is expressed in local coordinates.
+
+boolean clipRect(float left, float top, float right, float bottom)
+    Intersect the current clip with the specified rectangle, which is expressed in local coordinates.
+
+boolean clipRect(RectF rect, Region.Op op)
+    Modify the current clip with the specified rectangle.
+
+boolean clipRect(Rect rect)
+    Intersect the current clip with the specified rectangle, which is expressed in local coordinates.
+
+':region
+
+boolean clipRegion(Region region)
+    This method was deprecated in API level 21. Unlike all other clip calls this API does not respect the current matrix. Use clipRect(Rect) as an alternative.
+
+boolean clipRegion(Region region, Region.Op op)
+    This method was deprecated in API level 21. Unlike all other clip calls this API does not respect the current matrix. Use clipRect(Rect) as an alternative.
+
+':concat
+
+void concat(Matrix matrix)
+    Preconcat the current matrix with the specified matrix.
+
+':rgb
+
+void drawARGB(int a, int r, int g, int b)
+    Fill the entire canvas' bitmap (restricted to the current clip) with the specified ARGB color, using srcover porterduff mode.
+
+void drawRGB(int r, int g, int b)
+    Fill the entire canvas' bitmap (restricted to the current clip) with the specified RGB color, using srcover porterduff mode.
+
+':arc
+
+void drawArc(float left, float top, float right, float bottom, float startAngle, float sweepAngle, boolean useCenter, Paint paint)
+    Draw the specified arc, which will be scaled to fit inside the specified oval.
+
+void drawArc(RectF oval, float startAngle, float sweepAngle, boolean useCenter, Paint paint)
+    Draw the specified arc, which will be scaled to fit inside the specified oval.
+
+
+':bitmap
+
+void drawBitmap(Bitmap bitmap, Matrix matrix, Paint paint)
+    Draw the bitmap using the specified matrix.
+
+void drawBitmap(int[] colors, int offset, int stride, float x, float y, int width, int height, boolean hasAlpha, Paint paint)
+    This method was deprecated in API level 21. Usage with a hardware accelerated canvas requires an internal copy of color buffer contents every time this method is called. Using a Bitmap avoids this copy, and allows the application to more explicitly control the lifetime and copies of pixel data.
+
+void drawBitmap(int[] colors, int offset, int stride, int x, int y, int width, int height, boolean hasAlpha, Paint paint)
+    This method was deprecated in API level 21. Usage with a hardware accelerated canvas requires an internal copy of color buffer contents every time this method is called. Using a Bitmap avoids this copy, and allows the application to more explicitly control the lifetime and copies of pixel data.
+
+void drawBitmap(Bitmap bitmap, Rect src, Rect dst, Paint paint)
+    Draw the specified bitmap, scaling/translating automatically to fill the destination rectangle.
+
+void drawBitmap(Bitmap bitmap, float left, float top, Paint paint)
+    Draw the specified bitmap, with its top/left corner at (x,y), using the specified paint, transformed by the current matrix.
+
+void drawBitmap(Bitmap bitmap, Rect src, RectF dst, Paint paint)
+    Draw the specified bitmap, scaling/translating automatically to fill the destination rectangle.
+
+void drawBitmapMesh(Bitmap bitmap, int meshWidth, int meshHeight, float[] verts, int vertOffset, int[] colors, int colorOffset, Paint paint)
+    Draw the bitmap through the mesh, where mesh vertices are evenly distributed across the bitmap.
+
+':circle
+
+void drawCircle(float cx, float cy, float radius, Paint paint)
+    Draw the specified circle using the specified paint.
+
+':color
+
+void drawColor(int color)
+    Fill the entire canvas' bitmap (restricted to the current clip) with the specified color, using srcover porterduff mode.
+
+void drawColor(int color, PorterDuff.Mode mode)
+    Fill the entire canvas' bitmap (restricted to the current clip) with the specified color and porter-duff xfermode.
+
+':line
+
+void drawLine(float startX, float startY, float stopX, float stopY, Paint paint)
+    Draw a line segment with the specified start and stop x,y coordinates, using the specified paint.
+
+void drawLines(float[] pts, int offset, int count, Paint paint)
+    Draw a series of lines.
+
+void drawLines(float[] pts, Paint paint)
+
+':oval
+
+void drawOval(float left, float top, float right, float bottom, Paint paint)
+    Draw the specified oval using the specified paint.
+
+void drawOval(RectF oval, Paint paint)
+    Draw the specified oval using the specified paint.
+
+':paint
+
+void drawPaint(Paint paint)
+    Fill the entire canvas' bitmap (restricted to the current clip) with the specified paint.
+
+':path
+
+void drawPath(Path path, Paint paint)
+    Draw the specified path using the specified paint.
+
+':picture
+
+void drawPicture(Picture picture, Rect dst)
+    Draw the picture, stretched to fit into the dst rectangle.
+
+void drawPicture(Picture picture, RectF dst)
+    Draw the picture, stretched to fit into the dst rectangle.
+
+void drawPicture(Picture picture)
+    Save the canvas state, draw the picture, and restore the canvas state.
+
+':point
+
+void drawPoint(float x, float y, Paint paint)
+    Helper for drawPoints() for drawing a single point.
+
+void drawPoints(float[] pts, int offset, int count, Paint paint)
+    Draw a series of points.
+
+void drawPoints(float[] pts, Paint paint)
+    Helper for drawPoints() that assumes you want to draw the entire array
+
+':text
+
+void drawPosText(String text, float[] pos, Paint paint)
+    This method was deprecated in API level 16. This method does not support glyph composition and decomposition and should therefore not be used to render complex scripts. It also doesn't handle supplementary characters (eg emoji).
+
+void drawPosText(char[] text, int index, int count, float[] pos, Paint paint)
+    This method was deprecated in API level 16. This method does not support glyph composition and decomposition and should therefore not be used to render complex scripts. It also doesn't handle supplementary characters (eg emoji).
+
+':rect
+
+void drawRect(float left, float top, float right, float bottom, Paint paint)
+    Draw the specified Rect using the specified paint.
+
+void drawRect(Rect r, Paint paint)
+    Draw the specified Rect using the specified Paint.
+
+void drawRect(RectF rect, Paint paint)
+    Draw the specified Rect using the specified paint.
+
+void drawRoundRect(RectF rect, float rx, float ry, Paint paint)
+    Draw the specified round-rect using the specified paint.
+
+void drawRoundRect(float left, float top, float right, float bottom, float rx, float ry, Paint paint)
+    Draw the specified round-rect using the specified paint.
+
+':text
+
+void drawText(CharSequence text, int start, int end, float x, float y, Paint paint)
+    Draw the specified range of text, specified by start/end, with its origin at (x,y), in the specified Paint.
+
+void drawText(String text, float x, float y, Paint paint)
+    Draw the text, with origin at (x,y), using the specified paint.
+
+void drawText(String text, int start, int end, float x, float y, Paint paint)
+    Draw the text, with origin at (x,y), using the specified paint.
+
+void drawText(char[] text, int index, int count, float x, float y, Paint paint)
+    Draw the text, with origin at (x,y), using the specified paint.
+
+void drawTextOnPath(String text, Path path, float hOffset, float vOffset, Paint paint)
+    Draw the text, with origin at (x,y), using the specified paint, along the specified path.
+
+void drawTextOnPath(char[] text, int index, int count, Path path, float hOffset, float vOffset, Paint paint)
+    Draw the text, with origin at (x,y), using the specified paint, along the specified path.
+
+void drawTextRun(char[] text, int index, int count, int contextIndex, int contextCount, float x, float y, boolean isRtl, Paint paint)
+    Draw a run of text, all in a single direction, with optional context for complex text shaping.
+
+void drawTextRun(CharSequence text, int start, int end, int contextStart, int contextEnd, float x, float y, boolean isRtl, Paint paint)
+    Draw a run of text, all in a single direction, with optional context for complex text shaping.
+
+':
+
+void drawVertices(Canvas.VertexMode mode, int vertexCount, float[] verts, int vertOffset, float[] texs, int texOffset, int[] colors, int colorOffset, short[] indices, int indexOffset, int indexCount, Paint paint)
+    Draw the array of vertices, interpreted as triangles (based on mode).
+
+boolean getClipBounds(Rect bounds)
+    Return the bounds of the current clip (in local coordinates) in the bounds parameter, and return true if it is non-empty.
+
+final Rect getClipBounds()
+    Retrieve the bounds of the current clip (in local coordinates).
+
+int getDensity()
+    Returns the target density of the canvas.
+
+DrawFilter getDrawFilter()
+
+int getHeight()
+    Returns the height of the current drawing layer
+
+final Matrix getMatrix()
+    This method was deprecated in API level 16. Hardware accelerated canvases may have any matrix when passed to a View or Drawable, as it is implementation defined where in the hierarchy such canvases are created. It is recommended in such cases to either draw contents irrespective of the current matrix, or to track relevant transform state outside of the canvas.
+
+void getMatrix(Matrix ctm)
+    This method was deprecated in API level 16. Hardware accelerated canvases may have any matrix when passed to a View or Drawable, as it is implementation defined where in the hierarchy such canvases are created. It is recommended in such cases to either draw contents irrespective of the current matrix, or to track relevant transform state outside of the canvas.
+
+int getMaximumBitmapHeight()
+    Returns the maximum allowed height for bitmaps drawn with this canvas.
+
+int getMaximumBitmapWidth()
+    Returns the maximum allowed width for bitmaps drawn with this canvas.
+
+int getSaveCount()
+    Returns the number of matrix/clip states on the Canvas' private stack.
+
+int getWidth()
+    Returns the width of the current drawing layer
+
+boolean isHardwareAccelerated()
+    Indicates whether this Canvas uses hardware acceleration.
+
+boolean isOpaque()
+    Return true if the device that the current layer draws into is opaque (i.e.
+
+boolean quickReject(float left, float top, float right, float bottom, Canvas.EdgeType type)
+    Return true if the specified rectangle, after being transformed by the current matrix, would lie completely outside of the current clip.
+
+boolean quickReject(Path path, Canvas.EdgeType type)
+    Return true if the specified path, after being transformed by the current matrix, would lie completely outside of the current clip.
+
+boolean quickReject(RectF rect, Canvas.EdgeType type)
+    Return true if the specified rectangle, after being transformed by the current matrix, would lie completely outside of the current clip.
+
+void restore()
+    This call balances a previous call to save(), and is used to remove all modifications to the matrix/clip state since the last save call.
+
+void restoreToCount(int saveCount)
+    Efficient way to pop any calls to save() that happened after the save count reached saveCount.
+
+final void rotate(float degrees, float px, float py)
+    Preconcat the current matrix with the specified rotation.
+
+void rotate(float degrees)
+    Preconcat the current matrix with the specified rotation.
+
+int save(int saveFlags)
+    Based on saveFlags, can save the current matrix and clip onto a private stack.
+
+int save()
+    Saves the current matrix and clip onto a private stack.
+
+int saveLayer(float left, float top, float right, float bottom, Paint paint)
+    Convenience for saveLayer(left, top, right, bottom, paint, ALL_SAVE_FLAG)
+
+int saveLayer(RectF bounds, Paint paint, int saveFlags)
+    This behaves the same as save(), but in addition it allocates and redirects drawing to an offscreen bitmap.
+
+int saveLayer(RectF bounds, Paint paint)
+    Convenience for saveLayer(bounds, paint, ALL_SAVE_FLAG)
+
+int saveLayer(float left, float top, float right, float bottom, Paint paint, int saveFlags)
+    Helper version of saveLayer() that takes 4 values rather than a RectF.
+
+int saveLayerAlpha(float left, float top, float right, float bottom, int alpha, int saveFlags)
+    Helper for saveLayerAlpha() that takes 4 values instead of a RectF.
+
+int saveLayerAlpha(RectF bounds, int alpha, int saveFlags)
+    This behaves the same as save(), but in addition it allocates and redirects drawing to an offscreen bitmap.
+
+int saveLayerAlpha(float left, float top, float right, float bottom, int alpha)
+    Helper for saveLayerAlpha(left, top, right, bottom, alpha, ALL_SAVE_FLAG)
+
+int saveLayerAlpha(RectF bounds, int alpha)
+    Convenience for saveLayerAlpha(bounds, alpha, ALL_SAVE_FLAG)
+
+final void scale(float sx, float sy, float px, float py)
+    Preconcat the current matrix with the specified scale.
+
+void scale(float sx, float sy)
+    Preconcat the current matrix with the specified scale.
+
+void setBitmap(Bitmap bitmap)
+    Specify a bitmap for the canvas to draw into.
+
+void setDensity(int density)
+    Specifies the density for this Canvas' backing bitmap.
+
+void setDrawFilter(DrawFilter filter)
+
+void setMatrix(Matrix matrix)
+    Completely replace the current matrix with the specified matrix.
+
+void skew(float sx, float sy)
+    Preconcat the current matrix with the specified skew.
+
+void translate(float dx, float dy)
+    Preconcat the current matrix with the specified translation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.

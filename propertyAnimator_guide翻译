@@ -1,0 +1,268 @@
+动画和图形
+
+在这个文档里讲介绍
+    Property 动画是怎么工作的
+    ValueAnimator
+    ObjectAnimator
+    AnimationSet 执行多个动画
+    动画监听
+    使用 TypeEvaluator
+    使用 Interpolators
+    指定 帧
+    改变 ViewGroup 里面的布局动画
+    使 View 动画?
+    ViewPropertyAnimator
+    使用 xml 声明动画
+
+关键类
+    ValueAnimator
+    ObjectAnimator
+    TypeEvaluator
+
+实例代码
+    API Demos
+
+----
+什么是 property 例如 x轴是一个 properyty y轴是一个 property
+----
+
+Property Animation 是一个健壮的系统来让你移动任何事物，不管它是不是需要画到屏幕上。你也可以动画执行的时间中修改对象的 property?
+Property Animation 在执行时间内会改变执行移动 Object 对象的值，为了移动要移动的对象，你需要获得动画值，然后在设置到要移动的对象上。
+
+
+Property 动画系统可以让你定义这些属性
+
+    Duration: 动画执行时间 默认是 300 毫秒
+    Time interpolation: 决定动画执行的时间中里动画所计算的值
+    Repeat count and behavior: 重复次数和是否反向移动
+    Animator sets: 动画集合可以一起执行，也可以顺序执行，也可以指定延迟执行
+    Frame refresh delay: 帧刷新率 默认一帧的刷新时间是 10 毫秒，你可以指定刷新时间，但最终还是依赖系统
+
+Property 动画是怎么执行的
+
+
+Figure 1. 匀速执行的动画
+
+        总时间 40 毫秒，要移动的距离 40 像素，没 10 毫秒刷新一次。
+
+Figure 2. 非匀速执行的动画
+
+        先加速后减速
+
+Figure 2. 动画是怎么计算的
+
+
+
+------
+'interpolated fraction' 距离的比例
+'elapsed fraction' 时间的比例
+------
+
+-----
+
+ValueAnimator 记录了动画的时机，例如动画执行了多长时间，当前动画值
+
+ValueAnimator 内置了 'TimeInterpolator' 定义动画的插值器 'TypeEvaluator' 定义了如何计算动画值，例如在 Figure 2 中 'TimeInterpolator' 是 AccelerateDecelerateInterpolator, 'TypeEvaluator' 是 IntEvaluator
+
+要开始一个动画，首先传入'开始值' 和 '结束值' 和哪一种动画(property) 和持续时间 创建 ValueAnimator，当调用 start 的开始到整个动画过程中，ValueAnimator 根据执行过去的时间计算出从 0 到 1 的小数动画值
+
+'elapsed fraction' 代表的是动画完成时间的百分比，0代表0% 1代表100%，在 Figure 1 中，在时间点 10 毫秒位置的小数点是 0.25 因为整个动画执行时间是 40 毫秒
+
+当 ValueAnimator 计算完 'elapsed fraction' 后，会再用 'TimeInterpolator' 计算出 'interpolated fraction'，'interpolated fraction' 映射 'elapsed fraction' 到一个新的 'new fraction'，？？ 例如在 Figure 2. 中 因为是先加速， 所以在 'elapsed fraction' 等于 0.25 的位置(10毫秒的位置) ， 'interpolated fraction' 是 0.15 ()，在 Figure 1 中 'interpolated fraction' 和 'elapsed fraction' 总是相等的
+
+当计算完 'interpolated fraction' 后，ValueAnimator 会调用 TypeEvaluator 来计算真正的动画值，根据 'interpolated fraction'， 'starting value' , 'ending value' 来计算。例如在 Figure 2 中，在 10 毫秒的时候 'interpolated fraction' 是 0.15，动画值应该是 0.15 * 40 = 6
+
+API DEMO 里面 com.example.android.apis.animation 下是 Property animations 的示例代码。
+
+
+Property animation 和 View animation 有什么区别？[一个专注于 property 动画的计算，一个专注于 view ?]
+
+view animation 只支持 view 对象，所以如果你想使 非view 对象执行动画，你需要自己写动画代码。同时也有一些限制 只公开了几个动画的接口，例如缩放、旋转，但是没有提供背景颜色的动画。
+
+另一个缺点是 它只修改了 View 绘制的位置，并没有真正改变 View 的位置，例如你在屏幕上移动一个按钮，绘制出来的按钮的位置是正确的，但是你点击按钮是没有反应的，还需要你自己实现更改按钮实际位置的代码。
+
+property animation 则修正了上面的所有错误，你可以动画任何属性，和任何对象不管是不是 View 对象，并且是真正的修改了对象的位置。在高版本上，可以实现 颜色、位置、大小的动画，定义合适的插值器，并且可以同步执行多个动画
+
+可以自由的选择适用 property animation 或者 view animation ，因为 view animation 适用更少的代码，如果用 view animation 可以实现的效果或者已经写好的代码就没有必要适用 property animation
+
+
+
+
+API Overview
+
+// 动画
+Table 1. Animators
+    ValueAnimator  计算值
+    ObjectAnimator 计算并通过反射设置值
+    AnimatorSet    动画组
+
+// 计算
+Table 2. Evaluators
+    TypeEvaluator 接口
+    IntEvaluator 处理 int
+    FloatEvaluator 处理 float
+    ArgbEvaluator 处理 颜色
+
+// 插值器
+Table 3. Interpolators
+    AccelerateDecelerateInterpolator
+    AccelerateInterpolator
+    AnticipateInterpolator
+    AnticipateOvershootInterpolator
+    BounceInterpolator
+    CycleInterpolator
+    DecelerateInterpolator
+    LinearInterpolator
+    OvershootInterpolator
+    TimeInterpolator
+
+
+ValueAnimator 的使用 [只用于计算]
+
+ValueAnimator 可以使用 int float color 类型的值运行动画
+可以通过 ValueAnimator 的工厂方法 ofInt() ofFloat() ofObejct() 获得 ValueAnimator 对象
+
+ValueAnimator animation = ValueAnimator.ofFloat(0f, 1f);
+animation.setDuration(1000);
+animation.start();
+
+在这里例子中，当 animation 执行 start 方法后，会从 0 到 1 和 持续时间是 1000 毫秒 来计算动画值
+
+自定义类型，自定义类型处理TypeEvaluator 也可以指定自定义的类型来执行动画 例如：
+
+ValueAnimator animation = ValueAnimator.ofObject(new MyTypeEvaluator(), startPropertyValue,
+endPropertyValue);
+animation.setDuration(1000);
+animation.start();
+
+在这个例子中， ValueAnimator 会根据 startPropertyValue 和 endPropertyValue 和 自己实现的计算方法 MyTypeEvaluator 和 时间 1000 毫秒 计算动画值。
+
+之前的两个代码片段，执行之后不会对要移动的对象有什么影响，因为 ValueAnimator 没有去操作要移动的对象，可以通过定义动画监听，在 frame update 帧刷新的时候通过 getAnimatedValue() 获得计算好的动画值，然后自己去修改要移动对象的位置
+
+
+ObjectAnimator 的使用 [计算并设置要移动的对象]
+
+ObjectAnimator 是 ValueAnimator 的子类，包含了一个计时引擎，还可以获得指定 property 的动画值，有了这个类就不需要自己监听 AnimatorUpdateListener 接口了，因为 ObjectAnimator 会自己自动处理。前提是 object 要有 property 的 set/get 方法
+
+实例化 ObjectAnimator 和 ValueAnimator 是一样的，只不过多了两个参数，一个是 要移动的对象，一个是动画类型 property name
+
+ObjectAnimator anim = ObjectAnimator.ofFloat(foo, "alpha", 0f, 1f);
+anim.setDuration(1000);
+anim.start();
+
+要让 ObjectAnimator 自动更新属性需要满足下面的条件 ？？ 还没有完全搞懂
+
+1. object 必须有 setPropertyName 方法，例如 property 是 foo, 就必须有 setFoo(int) 方法，因为 ObjectAnimator 会在动画更新的时候自动执行这个方法，更新要移动的对象属性值
+
+2. 如果调用 ObjectAnimator 工厂方法时只设置了一个值，那么会默认会是结束值，因此?需要设置一个get方法用来获得开始值,例如 property 的名字是 foo 那么就需要一个 getFoot() 的方法
+
+3. 如果 property name 是在构造方法中设置的，那么必须有 setPropName(float) 和 getPropName()
+
+4. 因为依赖于 property 或者 object ，可能需要手动调用 invalidate() 方法，根据新动画值来强制重新绘制自己。在 onAnimationUpdate() 回调里面设置。例如，如果你想使Drawable对象的背景颜色执行动画就需要使用 invalidate()方法来重绘自己，而例如一些 View 的 setter 方法 setAlpha() setTrnslationX() 是不需要自己来 invalidate()的。
+
+
+用 AnimatorSet 执行多个动画
+
+
+在 ViewGroup 上应用动画[ViewGroup 是 View 的容器]
+
+Property 动画，提供了一些简单的方法来使 ViewGroup 中的 View 执行移动动画
+
+设置 LayoutTransition 可以为 ViewGroup 提供动画，当添加/移除/显示/隐藏的时候都会执行动画，而剩下的 View 则会移动到新的位置。 通过 LayoutTransition 的 setAnimator() 设置动画，第一个参数是动画执行的时机，第二个参数是要执行的 Animator
+
+动画执行的时机:
+    ·APPEARING            当 items 出现在容器的时候
+    ·CHANGE_APPEARING     当 new item 出现在容器的时候
+    ·DISAPPEARING         当 items 从容器消失的时候
+    ·CHANGE_DISAPPEARING  当 a item 从容器消失的时候
+
+开启默认动画
+API demo 中的 LayoutAnimationsByDefault 和 layout_animations_by_default.xml 展示了如何在 xml 里面开启 ViewGroup 中 View 的过渡动画，只要在 xml 中声明 android:animateLayoutChanges="true"
+默认动画会在添加和移除view的时候执行动画
+
+
+使用 TypeEvaluator
+
+如果你要移动的数据类型对 android 系统是未知的，不是基本的，那么就需要通过 TypeEvaluator 创建自己的 evaluator，对系统已知的类型是 int float color, 分别对应 IntEvaluator FloatEvaluator ArgbEvaluator
+
+自定义 TypeEvaluator 需要重写 evaluate() 方法，这个方法返回当前时间点的动画值，例如 FloatEvaluator 是这样实现的
+
+public class FloatEvaluator implements TypeEvaluator {
+    public Object evaluate(float fraction, Object startValue, Object endValue) {
+        float startFloat = ((Number) startValue).floatValue(); // 开始值
+        return startFloat + fraction * (((Number) endValue).floatValue() - startFloat);
+        // 开始值 + 插值的距离比例（结束值 - 开始值）
+    }
+}
+
+注意：当 ValueAnimator ObjectAnimator 开始执行的时候，它会计算 过去的时间（0-1 时间比率），然后计算 距离比例（0-1），最后再通过 TypeEvaluator 计算最终的动画值
+
+
+使用插值器
+
+传入时间比例 返回距离比例
+
+AccelerateDecelerateInterpolator
+public float getInterpolation(float input) {
+    return (float)(Math.cos((input + 1) * Math.PI) / 2.0f) + 0.5f; // 这里是什么
+}
+
+LinearInterpolator
+public float getInterpolation(float input) {
+    return input;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+参考资料：
+http://blog.csdn.net/iispring/article/details/50322625
+http://blog.csdn.net/eclipsexys/article/details/38401641
+http://blog.csdn.net/lmj623565791/article/details/38067475
+http://blog.csdn.net/lmj623565791/article/details/38092093
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.

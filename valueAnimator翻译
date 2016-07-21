@@ -1,0 +1,79 @@
+
+
+valueAnimator 是 一个计时引擎，计算动画值并作用于要移动的对象
+
+所有的动画都使用一个 计时系统，并且运行在一个单独的 Handler 上，以便可以在 UI 线程修改对象
+
+ValueAnimator 默认没有使用一个线性的插值器，而是使用的 AccelerateDecelerateInterpolator 插值器 先加速后减速 ， 改变插值器是使用 setInterpolator(TimeInterpolator)
+
+
+可以从资源文件或者java代码来创建，下面是通过资源文件的方式创建的
+<animator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="1000"
+    android:valueFrom="1"
+    android:valueTo="0"
+    android:valueType="floatType"
+    android:repeatCount="1"
+    android:repeatMode="reverse"/>
+
+
+可以使用 'PropertyValuesHolder' 或者 'Keyframe' 来创建多动画
+<animator xmlns:android="http://schemas.android.com/apk/res/android"
+          android:duration="1000"
+          android:repeatCount="1"
+          android:repeatMode="reverse">
+    <propertyValuesHolder>
+        <keyframe android:fraction="0" android:value="1"/>
+        <keyframe android:fraction=".2" android:value=".4"/>
+        <keyframe android:fraction="1" android:value="0"/>
+    </propertyValuesHolder>
+</animator>
+
+
+api
+
+AnimatorUpdateListener 动画更新接口
+
+
+INFINITE 无限
+RESTART 重新开始
+REVERSE 逆向
+
+
+addUpdateListener 添加动画监听事件
+
+cancel() 取消动画
+
+clone() 克隆复制一份这个对象
+
+end() 结束动画
+
+getAnimatedFraction() 获得当前动画执行的分数
+
+getAnimatedValue
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.

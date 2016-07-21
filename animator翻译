@@ -1,0 +1,121 @@
+ObjectAnimator 是 ValueAnimator 的子类，对指定对象设置动画属性
+
+ObjectAnimator 构造方法接收两个参数，一个是要移动的对象，另一个是动画名称
+
+在内部会调用 set/get 方法
+
+---
+
+可以用 java 代码或 配置文件 来创建动画
+
+<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="1000"
+    android:valueTo="200"
+    android:valueType="floatType"
+    android:propertyName="y"
+    android:repeatCount="1"
+    android:repeatMode="reverse"/>
+
+
+如果使用配置文件的方式，可以适用 'PropertyValuesHolder' 和 'Keyframe' 来创建更复杂的动画
+
+使用 'PropertyValuesHolder'  可以让动画并行的运行几个动画，例如：(相比上面多了y的动画)
+
+<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+                android:duration="1000"
+                android:repeatCount="1"
+                android:repeatMode="reverse">
+    <propertyValuesHolder android:propertyName="x" android:valueTo="400"/>
+    <propertyValuesHolder android:propertyName="y" android:valueTo="200"/>
+</objectAnimator>
+
+使用 'Keyframe' 可以让动画有更多的路径 从 start value 到 end value
+
+可以指定从 0 到 1 准确的小数值，动画将要结束数值
+
+或者，你可以对应上分数和帧时间
+
+...
+
+指定插值器，默认是 AccelerateDecelerateInterpolator
+
+<propertyValuesHolder android:propertyName="x" >
+    <keyframe android:fraction="0" android:value="800" />
+    <keyframe android:fraction=".2"
+              android:interpolator="@android:anim/accelerate_interpolator"
+              android:value="1000" />
+    <keyframe android:fraction="1"
+              android:interpolator="@android:anim/accelerate_interpolator"
+              android:value="400" />
+</propertyValuesHolder>
+<propertyValuesHolder android:propertyName="y" >
+    <keyframe/>
+    <keyframe android:fraction=".2"
+              android:interpolator="@android:anim/accelerate_interpolator"
+              android:value="300"/>
+    <keyframe android:interpolator="@android:anim/accelerate_interpolator"
+              android:value="1000" />
+</propertyValuesHolder>
+
+/--------------------------
+/ 一个 property 对应 一种动画
+/--------------------------
+
+api
+
+
+getPropertyName 获得属性名称
+
+getTarget 获得要移动的对象
+
+ofArgb 颜色渐变
+
+ofFloat 数值渐变 float
+
+ofInt 数值渐变 int
+
+ofMultiFloat
+
+ofMultiInt
+
+ofObject 针对非数值对象
+
+ofPropertyValuesHolder
+
+
+void setAutoCancel(boolean cancel) 设置自动取消，当对同一个对象再次执行动画的时候自动取消
+
+ObjectAnimator setDuration(long duration) 设置动画执行时间
+
+void setFloatValues(float... values) 设置值
+
+void setIntValues(int... values) 设置值
+
+void setObjectValues(Object... values) 设置值
+
+void setProperty(Property property) 设置哪种动画
+
+void setPropertyName(String propertyName) 设置哪种动画
+
+void setTarget(Object target) 设置执行动画的对象
+
+void setupStartValues() 使用适当的信息来提取动画开始的值
+
+void setupEndValues() 使用适当的信息来提取动画结束的值
+
+void start() 开始动画
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.

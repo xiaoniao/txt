@@ -1,0 +1,59 @@
+Canvas 承担绘制界面的职责。要绘制图形需要 4 部分，
+  Bitmap 保存像素
+  Canvas 动作
+  primitive Rect Path text Bitmap 基本组件
+  paint 画笔 定义颜色和风格
+
+
+
+enum Canvas.EdgeType (边缘类型)
+
+
+
+enum Canvas.VertexMode (顶点模式)
+
+
+SAVE_FLAG 保存参数
+
+
+
+Region.Op
+    DIFFERENCE 差异
+    INTERSECT 相交
+    REPLACE 替换
+    REVERSE_DIFFERENCE  反向差值
+    UNION 联合
+    XOR 异或
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.
